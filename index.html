@@ -56,9 +56,17 @@
                         </ul>                        
                     </nav>
                 </li>
+                <li>
+                    <nav>
+                        <h3><a href="#extras">Extras</a></h3>          
+                        <ul>
+                            <li><a href="#extrasLinks">Links</a></li>                            
+                        </ul>                        
+                    </nav>
+                </li>
             </ul>
         </div>
-        <div class="content">
+        <main class="content">
             <section id="programas">
                 <h1>Programas</h1>
                 <div id="chocolatey">
@@ -447,12 +455,19 @@
                         }
                     </pre>            
             </section>                 
-        </div>
+            <section id="extras">
+                <h1>Extras</h1>
+                <div id="extrasLinks">
+                    <h2>Links</h2>
+                    <p><a target="_blank" href="http://apowadotcc.herokuapp.com">TCC - Gerenciador de restaurante</a></p>
+                    <code>acessa com usuario: "bravo", senha: "0000"</code>
+            </section>
+        </main>
         <span class="autor">Lucas Gabriel Bravo</span>
     </div>
 </body>
 <script>
-    document.querySelectorAll("a")
+    document.querySelectorAll("a[href^='#']")
     .forEach(link =>{
         link.onclick = (event) => {
             event.preventDefault();

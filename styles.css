@@ -180,6 +180,10 @@ a{
     font-size: 0.80em;
 }
 
+.content > section > div > p > a{
+    color: rgb(110,64,255);
+}
+
 .autor{
     position: absolute;
     bottom: 5px;
