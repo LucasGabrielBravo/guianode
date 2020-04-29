@@ -1,0 +1,216 @@
+/*Reset simples*/
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    box-sizing: border-box;
+    text-decoration: none;    
+}
+
+/*Faz com que a DOM sempre tenha a altuma maxima possivel*/
+html, body{
+    min-height: 100%; 
+    display: flex;
+    flex-direction: column;
+    flex: 1;        
+}
+
+a{
+    color: inherit;
+}
+
+.container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    background-color: rgb(114, 83, 250);    
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.menuLateral{
+    background-color: #000;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    max-width: 270px;
+    width: 20%;        
+}
+
+.menuLateral img{
+    display: flex;    
+    height: 19%;        
+    max-height: 200px;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.menuLateral > .categorias{
+    display: flex;
+    flex-direction: column;
+    flex: 1;    
+    padding: 0 10px;
+    overflow: auto;
+}
+
+.menuLateral > .categorias h3:hover{
+    color: #6E40FF;
+}
+
+/*Configuração geral das li*/
+.menuLateral > .categorias li{
+    color: #FFF;            
+    list-style: none;    
+}
+
+.menuLateral > .categorias > li{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.menuLateral > .categorias > li > nav > ul{
+    margin-left: 10px;
+    margin-top: 1%;
+}
+
+.menuLateral > .categorias > li > nav > ul > li{    
+    margin-top: 1%;
+    margin-bottom: 2%;            
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 1px 0 0 0 rgb(110,64,255);    
+    transition: 1s;
+}
+
+.menuLateral > .categorias > li > nav > ul > li:hover{
+    box-shadow: inset 270px 0 50px 0 rgb(110,64,255);    
+    transition: 0.1s; 
+    transform: scale(1.1);       
+}
+
+.menuLateral > .categorias > li > nav > ul > li > a{
+    flex: 1;
+    padding: 2%;    
+    transition: 1s;
+}
+
+.menuLateral > .categorias > li > nav > ul > li > a:hover{
+    padding: 2% 4%;
+    transition: 0.25s;    
+}
+
+/*Conteudo*/
+.content{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: -webkit-min-content;
+    background-color: #6E40FF;    
+    overflow: auto;    
+    padding: 0.5%;    
+}
+
+/*Section de cada categoria*/
+.content > section{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;    
+    background-color: #FFF;
+    box-shadow: 3px 3px 5px 0 rgba(59, 59, 59, 0.65);
+}
+
+/*Titulo*/
+.content > section > h1{
+    font-size: 2em;    
+}
+
+/*Div de cada sub categoria*/
+.content > section > div{
+    margin-top: 10px;
+    border-bottom: 1px solid #CCC;        
+    padding: 5px 0 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/*Titulo da sub categoria*/
+.content > section > div > h2{
+    font-size: 1.6em;    
+    margin-bottom: 10px;    
+}
+
+/*Descricao da sub categoria*/
+.content > section > div > h3{
+    font-size: 1.2em;
+    margin-left: 10px;
+}
+
+/*Instrucoes*/
+.content > section > div > p{
+    font-size: 1em;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+/*Codigo*/
+.content > section > div code{
+    font-size: 1.1em;
+    background-color: rgba(238, 238, 238, 0.459);
+    padding: 3px;
+    border-radius: 0.55em;
+    margin-left: 10px;
+    width: max-content;
+}
+
+/*Observacoes*/
+.content > section > div > span{
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 0.80em;
+}
+
+.autor{
+    position: absolute;
+    bottom: 5px;
+    right: 2%;
+    color: rgb(110,64,255);
+    font-style: italic;
+}
+
+
+/*
+Habilita a personalizacao da barra de rolagem
+largura da barra vertical
+altura da barra horizontal
+*/
+::-webkit-scrollbar {
+    width: 1%;
+    height: 1%;  
+  }
+  /*
+  configuracoes do caminho percorrido pela barra de rolagem
+  cor de fundo do caminho (o 4º 0 do rgba define a opacidade; 1 para opaco 0 para tranparente)
+  */
+  ::-webkit-scrollbar-track-piece {
+    background-color: rgba(255, 228, 228, 0);    
+  }
+  
+  ::-webkit-scrollbar-thumb:vertical {    
+    background-color: rgb(255, 255, 255);        
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:horizontal {    
+    background-color: rgb(110,64,255);        
+  }
