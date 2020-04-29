@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta autor="Lucas Gabriel Bravo">    
+    <title>Guia NodeJS</title>
+    <style>
+        /*Reset simples*/
+        * {
+            margin: 0;
+            padding: 0;
+            outline: 0;
+            box-sizing: border-box;
+            text-decoration: none;    
+        }
+
+        /*Faz com que a DOM sempre tenha a altuma maxima possivel*/
+        html, body{
+            min-height: 100%; 
+            display: flex;
+            flex-direction: column;
+            flex: 1;        
+        }
+
+        a{
+            color: inherit;
+        }
+
+        .container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            background-color: rgb(114, 83, 250);    
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .menuLateral{
+            background-color: #000;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            max-width: 270px;
+            width: 20%;        
+        }
+
+        .menuLateral > .categorias{
+            display: flex;
+            flex-direction: column;
+            flex: 1;    
+            margin-top: 20px;
+            padding: 0 10px;
+            overflow: auto;
+        }
+
+        .menuLateral > .categorias h3:hover{
+            color: #6E40FF;
+        }
+
+        /*Configuração geral das li*/
+        .menuLateral > .categorias li{
+            color: #FFF;            
+            list-style: none;    
+        }
+
+        .menuLateral > .categorias > li{
+            display: flex;
+            flex-direction: column;
+            
+        }
+
+        .menuLateral > .categorias > li > nav > ul{
+            margin-left: 10px;
+            margin-top: 1%;
+        }
+
+        .menuLateral > .categorias > li > nav > ul > li{    
+            margin-top: 1%;
+            margin-bottom: 2%;            
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 1px 0 0 0 rgb(110,64,255);    
+            transition: 1s;
+        }
+
+        .menuLateral > .categorias > li > nav > ul > li:hover{
+            box-shadow: inset 270px 0 50px 0 rgb(110,64,255);    
+            transition: 0.1s; 
+            transform: scale(1.1);       
+        }
+
+        .menuLateral > .categorias > li > nav > ul > li > a{
+            flex: 1;
+            padding: 2%;    
+            transition: 1s;
+        }
+
+        .menuLateral > .categorias > li > nav > ul > li > a:hover{
+            padding: 2% 4%;
+            transition: 0.25s;    
+        }
+
+        /*Conteudo*/
+        .content{
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: -webkit-min-content;
+            background-color: #6E40FF;    
+            overflow: auto;    
+            padding: 0.5%;    
+        }
+
+        /*Section de cada categoria*/
+        .content > section{
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;    
+            background-color: #FFF;
+            box-shadow: 3px 3px 5px 0 rgba(59, 59, 59, 0.65);
+        }
+
+        /*Titulo*/
+        .content > section > h1{
+            font-size: 2em;    
+        }
+
+        /*Div de cada sub categoria*/
+        .content > section > div{
+            margin-top: 10px;
+            border-bottom: 1px solid #CCC;        
+            padding: 5px 0 10px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /*Titulo da sub categoria*/
+        .content > section > div > h2{
+            font-size: 1.6em;    
+            margin-bottom: 10px;    
+        }
+
+        /*Descricao da sub categoria*/
+        .content > section > div > h3{
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+
+        /*Instrucoes*/
+        .content > section > div > p{
+            font-size: 1em;
+            margin-left: 10px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        /*Codigo*/
+        .content > section > div code{
+            font-size: 1.1em;
+            background-color: rgba(238, 238, 238, 0.459);
+            padding: 3px;
+            border-radius: 0.55em;
+            margin-left: 10px;
+            width: max-content;
+        }
+
+        /*Observacoes*/
+        .content > section > div > span{
+            margin-left: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-size: 0.80em;
+        }
+
+        .autor{
+            position: absolute;
+            bottom: 5px;
+            right: 2%;
+            color: rgb(110,64,255);
+            font-style: italic;
+        }
+
+
+        /*
+        Habilita a personalizacao da barra de rolagem
+        largura da barra vertical
+        altura da barra horizontal
+        */
+        ::-webkit-scrollbar {
+            width: 1%;
+            height: 1%;  
+        }
+        /*
+        configuracoes do caminho percorrido pela barra de rolagem
+        cor de fundo do caminho (o 4º 0 do rgba define a opacidade; 1 para opaco 0 para tranparente)
+        */
+        ::-webkit-scrollbar-track-piece {
+            background-color: rgba(255, 228, 228, 0);    
+        }
+        
+        ::-webkit-scrollbar-thumb:vertical {    
+            background-color: rgb(255, 255, 255);        
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:horizontal {    
+            background-color: rgb(110,64,255);        
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="menuLateral">            
+            <ul class="categorias">
+                <li>
+                    <nav>
+                        <h3><a href="#programas">Programas</a></h3>                        
+                        <ul>
+                            <li><a href="#chocolatey"> Chocolatey</a></li>
+                            <li><a href="#node"> NodeJS</a></li>
+                            <li><a href="#yarn"> Yarn</a></li>
+                            <li><a href="#vscode"> Visual Studio Code</a></li>
+                            <li><a href="#insomninia"> Insominia</a></li>
+                            <li><a href="#expo"> Expo</a></li>                                
+                            <li><a href="#mongodb"> MongoDB</a></li>
+                        </ul>                        
+                    </nav>
+                </li>
+                <li>
+                    <nav>
+                        <h3><a href="#nodejs">NodeJS</a></h3>                        
+                        <ul>
+                            <li><a href="#nodejsDependencias">Dependências</a></li>
+                            <li><a href="#nodejsConsole">Console</a></li>
+                            <li><a href="#nodejsOutros">Outros</a></li>
+                        </ul>                        
+                    </nav>
+                </li>
+                <li>
+                    <nav>
+                        <h3><a href="#react">React</a></h3>                         
+                        <ul>
+                            <li><a href="#reactDependencias">Dependências</a></li>
+                            <li><a href="#reactConsole">Console</a></li>
+                            <li><a href="#reactOutros">Outros</a></li>
+                        </ul>                        
+                    </nav>
+                </li>
+                <li>
+                    <nav>
+                        <h3><a href="#reactNative">React Native</a></h3>          
+                        <ul>
+                            <li><a href="#reactNativeDependencias">Dependências</a></li>
+                            <li><a href="#reactNativeConsole">Console</a></li>
+                            <li><a href="#reactNativeOutros">Outros</a></li>
+                        </ul>                        
+                    </nav>
+                </li>
+            </ul>
+        </div>
+        <div class="content">
+            <section id="programas">
+                <h1>Programas</h1>
+                <div id="chocolatey">
+                    <h2>Chocolatey</h2>
+                    <h3>Gerenciador de pacotes para windows</h3>                    
+                    <p>Abrir o PowerShell como administrador e executar o comando</p>
+                    <code>Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))</code>
+                    <span>Obs.: Caso o comando não funcione, procurar o comando atualizado no Google</span>
+                </div>
+                <div id="node">
+                    <h2>NodeJS</h2>
+                    <h3>Servidor web capaz de executar aplicações JavaScript</h3>                    
+                    <p>Instalar via chocolatey usando o comando no PowerShell:</p>
+                    <code>cinst nodejs.install --version 10.16.3</code>
+                    <span>Obs.: A versão LTS mais atual ate então é a 10.16.3 (verificar no site oficial qual a versão mais atual)</span>
+                    <span>Obs.: É possível verificar a instalação com o comando:<code>node -v</code></span>
+                </div>
+                <div id="yarn">
+                    <h2>Yarn</h2>
+                    <h3>Gerenciador de pacotes para o NodeJS</h3>                    
+                    <p>Instalar via chocolatey usando o comando no PowerShell:</p>
+                    <code>cinst yarn</code>
+                    <span>Obs.: A versão LTS mais atual ate então é a 10.16.3 (verificar no site oficial qual a versão mais atual)</span>
+                    <span>Obs.: É possível verificar a instalação com o comando:<code>yarn -v</code></span>
+                </div>
+                <div id="vscode">
+                    <h2>Visual Studio Code</h2>
+                    <h3>Editor de código-fonte (IDE)</h3>                    
+                    <p>Instalar via chocolatey usando o comando no PowerShell:</p>
+                    <code>cinst vscode</code>
+                    <span>Obs.: É interessante, porém não necessario, instalar as extensões: </span>
+                    <span>Dracula Official, Material Icon Theme, Rocketseat ReactJS, Rocketseat React Native, Color Highlight, vscode-styled-components</span>
+                </div>
+                <div id="insomninia">
+                    <h2>Insomninia</h2>
+                    <h3>Cliente de API REST</h3>                    
+                    <p>Instalar via chocolatey usando o comando no PowerShell:</p>
+                    <code>cinst insomnia-rest-api-client</code>
+                    <span>Obs.: É interessante, porém não necessario, instalar as extensões: </span>
+                    <span>Dracula Official, Material Icon Theme, Rocketseat ReactJS, Rocketseat React Native, Color Highlight, vscode-styled-components</span>
+                </div>
+                <div id="expo">
+                    <h2>Expo</h2>
+                    <h3>Plataforma para visualizar/criar o aplicativo com React Native</h3>                    
+                    <p>Instalar pelo PowerShell usando o comando:</p>
+                    <code>npm install -g expo-cli</code>
+                    <span>Obs.: É necessario instalar o expo no smartphone (ou emulador de smartphone) </span>                    
+                </div>
+                <div id="mongodb">
+                    <h2>MongoDB</h2>
+                    <h3>Banco de dados não relacional</h3>                    
+                    <p>Guia rapido e nada descritivo:</p>
+                    
+                    <code>Acesse MongoDB Atlas</code>
+                    <code>Crie uma conta</code>
+                    <code>Crie um servidor(cluster)</code>                     
+                    <code>Crie um novo usuario</code>
+                    <code>Em "Network Access" adicione o IP 0.0.0.0 para liberar o acesso</code>
+                    <code>Em "Conect" selecione o "connect your application"</code>
+                    <code>Copie o link gerado</code>
+                    <code>Cole o link no arquivo .env do projeto NodeJS ao lode de MONGO_URL=</code>
+                    <code>MONGO_URL=mongodb+srv://&lt;username&gt;:&lt;password&gt;@banco-3tmmn.mongodb.net/NomeDoBanco?retryWrites=true&w=majority</code>
+                    <code>Substitua "&lt;username&gt;:&lt;password&gt;" pelo usuario e senha que foi criado.</code>
+                    <code>Substitua o "test" apos o ".net/" pelo nome desejado para o banco de dados (Não apague o ?retry...)</code>
+                </div>
+            </section>  
+            <section id="nodejs">
+                <h1>Node.JS</h1>
+                <div id="nodejsDependencias">
+                    <h2>Dependências</h2>
+                    <h3>Express</h3>
+                    <p>Framework para desenvolvimento em NodeJS</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add express</code>
+                    <span></span>  
+                                        
+                    <h3>Nodemon</h3>
+                    <p>Biblioteca capaz de monitorar os arquivos .js do projeto e assim atualizar o servidor sem reinicia-lo</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add nodemon -D</code>
+                    <span>
+                        Obs.: Editar o package.json adicionando o seguinte codigo:
+                        <code>"scripts":{"dev":"nodemon: src/server.js"}</code>
+                        , onde "server.js" é o nome do arquivo que inicializa a aplicação
+                    </span>
+                    
+                    <h3>Mongoose</h3>
+                    <p>Biblioteca responsavel por realizar a conexao com o banco de dados MongoDB</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add mongoose</code>
+                    <span></span>
+
+                    <h3>Multer</h3>
+                    <p>Biblioteca usada para tratrar requisições mulpart form data (upload de arquivos)</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add multer</code>
+                    <span></span>
+
+                    <h3>Cors</h3>
+                    <p>Biblioteca usada para controlar o acesso externa à aplicação</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add cors</code>
+                    <span></span>
+
+                    <h3>Dotenv</h3>
+                    <p>Biblioteca usada ler as variaveis globais no arquivo .env</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add dotenv</code>
+                    <span>Obs.: O arquivo ".env" deve ser criado manualmente na raiz do projeto</span>
+
+                    <h3>Socket.io</h3>
+                    <p>Biblioteca usada para trabalhar com protocolo socket.io</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add socket.io</code>           
+                    <span></span>         
+
+                    <h3>Helmet</h3>
+                    <p>Biblioteca que tras consigo um conjuto de configurações de sugurança para cabeçalhos http</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add helmet</code>           
+                    <span></span>         
+                </div>                
+                <div id="nodejsConsole">
+                    <h2>Console</h2>
+                    <h3>Iniciar projeto NodeJS</h3>
+                    <p>Para inciar um projeto nodeJS crie uma pasta, abra o PowerShell nessa pasta e execute o comando</p>
+                    <code>yarn init -y</code>       
+                    <span>Todos as dependencias do seu projeto deverão ser instaladas a partir dessa pasta</span>             
+
+                    <h3>Iniciar o servidor NodeJS</h3>
+                    <p>Para inciar o servidor, basta executar</p>
+                    <code>yarn dev</code>       
+                    <span>Obs.: o "dev" precisa ser configurado nos scripts do package.json</span>             
+                </div> 
+                <div id="nodejsOutros">
+                    <h2>Outros</h2>
+                    <h3>Codigo pronto do arquivo server.js</h3>                    
+                    <pre>                        
+    require('dotenv').config();             //dotenv -> habilita as variaveis globais do arquivo .env
+    const express = require('express');     //express -> framework para programar o backend com mais agilidade   
+    const mongoose = require('mongoose');   //mongoose -> responsavel pela comunicação com o banco
+    const cors = require('cors');           //cors -> controla o acesso externo da aplicacao
+    const routes = require('./routes');     //Importa as rotas que foram criadas no arquivo
+    const helmet = require('helmet')        //helmet -> conjunto de diretivas de seguraca
+    const http = require('http');           //http -> controla as requisicoes http (http ja vem incluso no express)
+    const socketio = require('socket.io')   //socket.io -> controla as requisicoes feitas pelo protocolo socket.io - usado para criar respostas em tempo real
+
+
+    //Conecta o banco usando a URL passada no .env usando a variavel global MONGO_URL
+    mongoose.connect(process.env.MONGO_URL,
+        {
+            //parametros de configuracoes adicionais
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false,        
+        }
+    );
+    mongoose.set('useCreateIndex', true);   //habilita a criacao de indexs no banco
+
+    const app = express();          //carrega os recurso do express dentro da constante
+    const server = http.Server(app) //carrega o app dentro de server como um Server http
+    const io = socketio(server)     //carrega o server dentro de sockeio para que possa receber as requisicoes desse protocolo
+
+    //.use eh usado para habilitar/definir algum recurso dendo de app
+
+    app.use((req, res, next)=>{     
+        req.io = io;    //inclui o io dentro de todas as futuras requisicoes
+        return next();  //indica que o sistema deve continuar normalmente
+    });
+
+    app.use(helmet());          //habilita o helmet no app
+    app.use(cors());            //habilita o cors no app
+    app.use(express.json());    //indica que o express devera lidar com requisições tipo JSON
+    app.use(routes);            //habilita as rotas criadas no arquivo routes.js
+
+    server.listen(process.env.PORT || 3333);    //iniciar o servidor na porta especificada                                                                
+                    </pre> 
+            </section>            
+            <section id="react">
+                <h1>React</h1>
+                <div id="reactDependencias">
+                    <h2>Dependências</h2>
+                    <h3>Axios</h3>
+                    <p>Biblioteca para tratar chamadas API</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add axios</code>
+                    <span></span>  
+                                        
+                    <h3>React Router Dom</h3>
+                    <p>Biblioteca usada para criar rotas no frontend</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add react-router-dom</code>
+                    <span></span>
+                    
+                    <h3>React Loader Spinner</h3>
+                    <p>Biblioteca que possui um conjunto pronto de "spinners" (animações de 'carregando...') </p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add react-loader-spinner</code>
+                    <span></span>
+
+                    <h3>React Promise Tracker</h3>
+                    <p>Biblioteca usada para "invocar" os spnnier quando forem necessários</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add react-promise-tracker</code>
+                    <span></span>
+
+                    <h3>Socket.io Client</h3>
+                    <p>Biblioteca usada para trabalhar com protocolo socke.io</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add socket.io-client</code>
+                    <span></span>                                                            
+                </div>                
+                <div id="reactConsole">
+                    <h2>Console</h2>
+                    <h3>Iniciar projeto React</h3>
+                    <p>Para inciar um projeto React, abra o PowerShell no mesmo local onde a pasta do projeto em NodeJS está e execute o comando</p>
+                    <code>yarn create react-app frontend</code>       
+                    <span>Obs.: frontend é o nome da pasta que será criada</span>
+                    <span>Obs.: Cuidado para não criar o projeto React dentro da pasta do projeto em NodeJS</span>
+                    <span>Todos as dependencias do seu projeto deverão ser instaladas a partir dessa pasta</span>             
+
+                    <h3>Iniciar o servidor React</h3>
+                    <p>Para inciar o servidor, basta executar</p>
+                    <code>yarn start</code>       
+                    <span></span>             
+                </div> 
+                <div id="reactOutros">
+                    <h2>Outros</h2>
+                    <h3>Configurações iniciais do React</h3>                                                                                          
+                    <p>Apos a instação dos arquivos do React, os seguintes arquivos podem ser deletados:</p>                                        
+                    <code>/Readme.md</code>
+                    <code>/public/robots.txt</code>
+                    <code>/src/Logo.svg</code>
+                    <code>/src/Index.css</code>
+                    <code>/src/App.test.js</code>
+                    <code>/src/setupTeste.js</code>
+                    <p>Após deletar os itens acima, editar os seguintes itens: </p>
+                    <code>/src/App.css</code>
+    <pre>
+    "...pode apagar tudo..."
+    </pre>
+                    <code>/src/index.js</code>
+    <pre>
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import App from './App';
+    import * as serviceWorker from './serviceWorker';
+
+    ReactDOM.render(
+    &lt;React.StrictMode&gt;
+        &lt;App /&gt;
+    &lt;/React.StrictMode&gt;,
+    document.getElementById('root')
+    );
+
+    serviceWorker.unregister();
+    </pre>
+                    <code>/src/App.js</code>
+    <pre>
+    import React from 'react';
+    import './App.css';
+
+    function App() {
+        return (
+            &lt;div className="App"&gt;
+            
+            &lt;/div&gt;
+        );
+    }
+
+    export default App;
+    </pre>
+
+                    <h3>Habilitar atalhos jsx</h3>
+                    <p>Acesse as configurações do Visual Studio Code com CTRL+SHIFT+P</p>
+                    <p>Pesquise por "json" e acesse o "Preferences: Open Settings(JSON)"</p>
+                    <p>Adicione ao json do configuração o seguinte codigo:</p>
+    <pre>
+    "emmet.syntaxProfiles": {
+        "javascript": "jsx",
+    },
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+    },
+    </pre>
+
+            </section>
+            <section id="reactNative">
+                <h1>React Native</h1>
+                <div id="reactNativeDependencias">
+                    <h2>Dependências</h2>
+                    <h3>Axios</h3>
+                    <p>Biblioteca para tratar chamadas API</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add axios</code>
+                    <span></span> 
+
+                    <h3>React Navigation</h3>
+                    <p>Biblioteca para criar rotas no aplicativo</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add react-navigation</code>
+                    <span></span>  
+                                        
+                    <h3>React Native Gesture Handler</h3>
+                    <p>Biblioteca para lidar com gestos</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>expo install react-native-gesture-handler</code>
+                    <span></span>
+                    
+                    <h3>React Native Reanimated</h3>
+                    <p>Biblioteca para lidar com animações</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>expo install react-native-reanimated</code>
+                    <span></span>
+
+                    <h3>React Promise Tracker</h3>
+                    <p>Biblioteca usada para "invocar" os spnnier quando forem necessários</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add react-promise-tracker</code>
+                    <span></span>
+
+                    <h3>Socket.io Client</h3>
+                    <p>Biblioteca usada para trabalhar com protocolo socke.io</p>                    
+                    <p>Instalar pelo PowerShell na pasta do projeto usando o comando:</p>
+                    <code>yarn add socket.io-client</code>
+                    <span></span>                                                            
+                </div>                
+                <div id="reactNativeConsole">
+                    <h2>Console</h2>
+                    <h3>Iniciar projeto React Native com Expo</h3>
+                    <p>Para inciar um projeto React Native com Expo, abra o PowerShell no mesmo local onde a pasta do projeto em NodeJS está e execute o comando</p>
+                    <code>expo init mobile</code>       
+                    <span>Obs.: mobile é o nome da pasta que será criada</span>
+                    <span>Obs.: Cuidado para não criar o projeto React Native dentro da pasta do projeto em NodeJS</span>
+                    <span>Todos as dependencias do seu projeto deverão ser instaladas a partir dessa pasta</span>             
+
+                    <h3>Iniciar o servidor React Native</h3>
+                    <p>Para inciar o servidor, basta executar</p>
+                    <code>yarn start</code>       
+                    <span>Uma vez iniciado, usando o aplicativo do Expo instalado do no smartphone, leia o QR Cedo usando o app Expo</span>             
+                </div> 
+                <div id="reactNativeOutros">
+                    <h2>Outros</h2>
+                    <h3>Icone e Banner</h3>                                                                                          
+                    <p>Para personalizar o icone e o banner de "carregamento" do aplicativo, basta subtituir os arquivos da pasta "assets"</p>                                        
+                    <span>Obs.: Utilize preferencialmente imagens png. Mantenhas as mesmas proporções para o icone. No caso da splash, o tamanho pode ser alterado para algo retangular como 1242x2436</span>
+
+                    <h3>Configurações do app.json</h3>
+                    <p>Fala as seguintes edições no app.json</p>
+                    <span>name: nome do aplicativo</span>
+                    <span>slug: nome em URL</span>
+                    <span>backgroundColor: cor de fundo padão</span>
+                    <span>Adicione as linhas correspondentes a ios e android</span>
+                    <pre>
+                        {
+                            "expo": {
+                              "name": "TCC-Companion",
+                              "slug": "TC3",
+                              "platforms": [
+                                "ios",
+                                "android",
+                                "web"
+                              ],
+                              "version": "1.0.0",
+                              "orientation": "portrait",
+                              "icon": "./assets/icon.png",
+                              "splash": {
+                                "image": "./assets/splash.png",
+                                "resizeMode": "contain",
+                                "backgroundColor": "#DCBFAA"
+                              },
+                              "updates": {
+                                "fallbackToCacheTimeout": 0
+                              },
+                              "assetBundlePatterns": [
+                                "**/*"
+                              ],
+                              "ios": {
+                                "supportsTablet": true,
+                                "bundleIdentifier" : "com.bravo.tcccompanion"
+                              },
+                              "android": {
+                                "package": "com.bravo.tcccompanion"
+                              }
+                            }
+                        }
+                    </pre>            
+            </section>                 
+        </div>
+        <span class="autor">Lucas Gabriel Bravo</span>
+    </div>
+</body>
+<script>
+    document.querySelectorAll("a")
+    .forEach(link =>{
+        link.onclick = (event) => {
+            event.preventDefault();
+            const id = link.getAttribute("href");
+            const to = document.querySelector(id).offsetTop;            
+            document.querySelector(".content").scroll({
+                top: to,
+                behavior: "smooth"
+            });
+        }
+    });
+</script>
+</html>
